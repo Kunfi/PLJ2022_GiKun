@@ -1,5 +1,7 @@
 package ch.noseryoung.sbdemo01.domain.role;
 
+import ch.noseryoung.sbdemo01.domain.authority.Authority;
+import ch.noseryoung.sbdemo01.domain.authority.AuthorityRepository;
 import ch.noseryoung.sbdemo01.domain.exceptions.IdExistsException;
 import ch.noseryoung.sbdemo01.domain.exceptions.NotFoundException;
 import lombok.extern.log4j.Log4j2;
@@ -12,25 +14,40 @@ import java.util.List;
 @Service
 public class RoleService {
 
-    private final RoleRepository repository;
+    private final RoleRepository roleRepository;
+    private final AuthorityRepository authorityRepository;
 
     @Autowired
-    public RoleService(RoleRepository repository) {
-        this.repository = repository;
+    public RoleService(RoleRepository roleRepository, AuthorityRepository authorityRepository) {
+        this.roleRepository = roleRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     public List<Role> getAllRoles() {
-        return repository.findAll();
+        return roleRepository.findAll();
     }
 
     public Role findById(int roleId) throws NotFoundException {
-        return repository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
+        return roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
     }
 
     public Role createNewRole(Role newRole) throws IdExistsException {
-        if (!repository.existsById(newRole.getRoleId())) {
+        if (!roleRepository.existsById(newRole.getRoleId())) {
             log.debug("Role creation successful");
-            return repository.save(newRole);
+            return roleRepository.save(newRole);
+       }
+        else {
+            log.debug("Role creation NOT successful");
+            throw new IdExistsException();
+        }
+    }
+
+    public Role addAuthorityToRole(Integer roleId, Integer authorityId) {
+        if (!authorityRepository.existsById(authorityId)) {
+            log.debug("Authority existing");
+            Role role = roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
+            role.getAuthorities().add(authorityRepository.findById(authorityId).orElseThrow(() -> new NotFoundException("Authority")));
+            return roleRepository.save(role);
         }
         else {
             log.debug("Role creation NOT successful");
@@ -39,13 +56,13 @@ public class RoleService {
     }
 
     public String deleteRole(int roleId) throws NotFoundException{
-        repository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
-        repository.deleteById(roleId);
+        roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
+        roleRepository.deleteById(roleId);
         return "Has been deleted";
     }
 
     public Role updateRole(Role role){
-        return repository.save(role);
+        return roleRepository.save(role);
 
     }
 }
