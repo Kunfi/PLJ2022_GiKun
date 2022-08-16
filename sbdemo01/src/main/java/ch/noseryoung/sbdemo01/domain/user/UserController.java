@@ -77,12 +77,18 @@ public class UserController {
     }
 
     // Create new Role
-    @PostMapping("/Role")
+    @PostMapping("/role")
     public ResponseEntity<Role> createNewRole(@Valid @RequestBody Role newRole) {
         log.info("A new role will be created...");
         return ResponseEntity.status(201).body(roleService.createNewRole(newRole));
     }
 
+    // Add Authority to Role
+    @PutMapping("/authority/{roleId}-{authorityId}")
+    public ResponseEntity<Role> addAuthToRole
+    (@PathVariable("roleId") Integer roleId, @PathVariable("authorityId") Integer authorityId, @Valid @RequestBody Role role) {
+        return ResponseEntity.ok().body(roleService.addAuthorityToRole(roleId, authorityId));
+    }
 
 
     @ExceptionHandler(NotFoundException.class)
