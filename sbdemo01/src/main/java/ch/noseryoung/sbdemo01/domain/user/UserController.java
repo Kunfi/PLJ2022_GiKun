@@ -54,6 +54,12 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findById(userId));
     }
 
+    @GetMapping("/roles/{roleId}")
+    public ResponseEntity<Role> findRoleById
+        (@PathVariable("roleId") Integer roleId) {
+        return ResponseEntity.ok().body(roleService.findById(roleId));
+    }
+
     // Create new User with this Info
     @PostMapping("/")
     public ResponseEntity<User> createNewUser(@Valid @RequestBody User newUser) {
