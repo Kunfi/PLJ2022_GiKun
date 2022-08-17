@@ -8,6 +8,7 @@ import ch.noseryoung.sbdemo01.domain.role.RoleService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class UserController {
         this.roleService = roleService;
         this.userMapper = userMapper;
     }
+
 
     // Get all users
     @GetMapping("/")
@@ -61,6 +63,7 @@ public class UserController {
     }
 
     // Create new User with this Info
+    @PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/")
     public ResponseEntity<User> createNewUser(@Valid @RequestBody User newUser) {
         log.info("A user will be created...");

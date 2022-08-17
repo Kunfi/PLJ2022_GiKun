@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @EnableWebSecurity
@@ -19,18 +17,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
     private final UserDetailsService userDetailsService;
 
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    @Autowired    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
-    }
-
-    @Bean
-    public PasswordEncoder encoder() {
-        return NoOpPasswordEncoder.getInstance();
     }
 
     @Override
@@ -46,11 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("**")
             .permitAll()
             .and()
+            .addFilterAfter(new JWTAuthorizationFilter(), BasicAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/users")
             .authenticated()
             .and()
-            .addFilterAfter(new JWTAuthorizationFilter(), BasicAuthenticationFilter.class)
             .formLogin();
     }
 }
