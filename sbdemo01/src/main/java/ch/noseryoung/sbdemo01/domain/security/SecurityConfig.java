@@ -2,6 +2,7 @@ package ch.noseryoung.sbdemo01.domain.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -17,15 +20,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("Almgandhi")
-            .password("{noop}banane123")
-            .roles("CHEF")
-            .authorities("ALL");
+        auth.userDetailsService(userDetailsService);
+    }
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Override
@@ -45,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/users")
             .authenticated()
             .and()
+            .addFilterAfter(new JWTAuthorizationFilter(), BasicAuthenticationFilter.class)
             .formLogin();
-
     }
 }
