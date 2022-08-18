@@ -42,7 +42,7 @@ public class RoleService {
         }
     }
 
-    public Role addAuthorityToRole(Integer roleId, Integer authorityId) {
+    public Role addAuthorityToRole(Integer roleId, Integer authorityId) throws NotFoundException {
         if (!authorityRepository.existsById(authorityId)) {
             log.debug("Authority existing");
             Role role = roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));

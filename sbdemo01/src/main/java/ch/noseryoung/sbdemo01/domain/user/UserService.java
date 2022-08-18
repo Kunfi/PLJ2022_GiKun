@@ -22,14 +22,12 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AuthorityRepository authorityRepository;
-    private final RoleRepository roleRepository;
+
 
     @Autowired
-    public UserService(UserRepository repository, AuthorityRepository authorityRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository repository) {
         this.userRepository = repository;
-        this.authorityRepository = authorityRepository;
-        this.roleRepository = roleRepository;
+
     }
 
     public List<User> getAllUsers() {
@@ -42,8 +40,9 @@ public class UserService implements UserDetailsService {
 
     public User createNewUser(User newUser) throws IdExistsException {
         if (!userRepository.existsById(newUser.getUserId())) {
+            User user = userRepository.save(newUser);
             log.debug("User creation successful");
-            return userRepository.save(newUser);
+            return user;
         }
         else {
             log.debug("User creation NOT successful");
@@ -52,14 +51,17 @@ public class UserService implements UserDetailsService {
     }
 
     public String deleteUser(int userId) throws NotFoundException{
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
-        userRepository.deleteById(userId);
-        return "Has been deleted";
+        if (userRepository.existsById(userId)) {
+            userRepository.deleteById(userId);
+            return "Has been deleted";
+        }
+        else {
+            throw new NotFoundException("User");
+        }
     }
 
     public User updateUser(User user){
         return userRepository.save(user);
-
     }
 
     @Override

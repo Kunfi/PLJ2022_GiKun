@@ -29,11 +29,12 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-        name = "users_roles",
+        name = "user_roles",
         joinColumns = @JoinColumn(
-            name = "userId", referencedColumnName = "id"),
+            name = "id_user", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(
-            name = "roleId", referencedColumnName = "id"))
+            name = "id_role", referencedColumnName = "id"))
+
     private Collection<Role> roles;
 
 }

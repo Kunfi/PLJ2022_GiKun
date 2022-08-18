@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -22,9 +21,6 @@ public class Role {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
-
     @ManyToMany
     @JoinTable(
         name = "roles_authorities",
@@ -32,6 +28,6 @@ public class Role {
             name = "id_role", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(
             name = "id_authority", referencedColumnName = "id"))
-    private Set<Authority> authorities;
+    private Collection<Authority> authorities;
 
 }
