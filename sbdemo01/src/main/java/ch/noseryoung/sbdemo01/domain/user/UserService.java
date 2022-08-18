@@ -1,7 +1,9 @@
 package ch.noseryoung.sbdemo01.domain.user;
 
+import ch.noseryoung.sbdemo01.domain.authority.AuthorityRepository;
 import ch.noseryoung.sbdemo01.domain.exceptions.NotFoundException;
 import ch.noseryoung.sbdemo01.domain.exceptions.IdExistsException;
+import ch.noseryoung.sbdemo01.domain.role.RoleRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,25 +21,29 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository repository, AuthorityRepository authorityRepository, RoleRepository roleRepository) {
+        this.userRepository = repository;
+        this.authorityRepository = authorityRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<User> getAllUsers() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     public User findById(int userId) throws NotFoundException {
-        return repository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
     }
 
     public User createNewUser(User newUser) throws IdExistsException {
-        if (!repository.existsById(newUser.getUserId())) {
+        if (!userRepository.existsById(newUser.getUserId())) {
             log.debug("User creation successful");
-            return repository.save(newUser);
+            return userRepository.save(newUser);
         }
         else {
             log.debug("User creation NOT successful");
@@ -46,25 +52,26 @@ public class UserService implements UserDetailsService {
     }
 
     public String deleteUser(int userId) throws NotFoundException{
-        repository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
-        repository.deleteById(userId);
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
+        userRepository.deleteById(userId);
         return "Has been deleted";
     }
 
     public User updateUser(User user){
-        return repository.save(user);
+        return userRepository.save(user);
 
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repository.findByUserName(username);
+        User user = userRepository.findByUserName(username);
         if (user == null){throw new UsernameNotFoundException("User not found");}
         else {
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            user.getRole().getAuthorities().forEach(authority ->
-                authorities.add(new SimpleGrantedAuthority(authority.getDescription())));
+            user.getRoles().forEach(role -> role.getAuthorities().forEach(authority ->
+                authorities.add(new SimpleGrantedAuthority(authority.getDescription()))));
             return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
         }
     }
+
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -26,8 +27,13 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role", referencedColumnName = "id")
-    private Role role;
+    @ManyToMany
+    @JoinTable(
+        name = "users_roles",
+        joinColumns = @JoinColumn(
+            name = "userId", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(
+            name = "roleId", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
 }
