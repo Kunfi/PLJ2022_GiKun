@@ -21,7 +21,7 @@ public class Role {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "roles_authorities",
         joinColumns = @JoinColumn(

@@ -105,10 +105,16 @@ public class UserController {
     // Add Authority to Role
     @PutMapping("/authority/{roleId}-{authorityId}")
     public ResponseEntity<Role> addAuthToRole
-    (@PathVariable("roleId") Integer roleId, @PathVariable("authorityId") Integer authorityId, @Valid @RequestBody Role role) {
+        (@PathVariable("roleId") Integer roleId, @PathVariable("authorityId") Integer authorityId, @Valid @RequestBody Role role) {
         return ResponseEntity.ok().body(roleService.addAuthorityToRole(roleId, authorityId));
     }
 
+    // Add Role to User
+    @PutMapping("/role/{userId}-{roleId}")
+    public ResponseEntity<Object> addRoleToUser
+        (@PathVariable("userId") Integer userId, @PathVariable("roleId") Integer roleId, @Valid @RequestBody User user) {
+        return ResponseEntity.ok().body(userService.addRoleToUser(userId, roleId));
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleStuffNotFoundException(NotFoundException nfe) {

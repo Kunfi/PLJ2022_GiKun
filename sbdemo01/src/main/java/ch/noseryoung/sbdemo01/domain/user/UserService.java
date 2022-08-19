@@ -1,6 +1,5 @@
 package ch.noseryoung.sbdemo01.domain.user;
 
-import ch.noseryoung.sbdemo01.domain.authority.AuthorityRepository;
 import ch.noseryoung.sbdemo01.domain.exceptions.NotFoundException;
 import ch.noseryoung.sbdemo01.domain.exceptions.IdExistsException;
 import ch.noseryoung.sbdemo01.domain.role.RoleRepository;
@@ -22,12 +21,14 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, RoleRepository roleRepository) {
         this.userRepository = repository;
 
+        this.roleRepository = roleRepository;
     }
 
     public List<User> getAllUsers() {
@@ -64,6 +65,13 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public Object addRoleToUser(Integer userId, Integer roleId) throws NotFoundException {
+        log.debug("Role existing");
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User"));
+        user.getRoles().add(roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role")));
+        return userRepository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username);
@@ -76,5 +84,4 @@ public class UserService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
         }
     }
-
 }
