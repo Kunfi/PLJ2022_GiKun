@@ -1,6 +1,8 @@
 package ch.noseryoung.sbdemo01.domain.user;
 
 
+import ch.noseryoung.sbdemo01.domain.authority.Authority;
+import ch.noseryoung.sbdemo01.domain.authority.AuthorityService;
 import ch.noseryoung.sbdemo01.domain.exceptions.IdExistsException;
 import ch.noseryoung.sbdemo01.domain.exceptions.NotFoundException;
 import ch.noseryoung.sbdemo01.domain.role.Role;
@@ -8,7 +10,6 @@ import ch.noseryoung.sbdemo01.domain.role.RoleService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +27,14 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final AuthorityService authorityService;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService, RoleService roleService, UserMapper userMapper) {
+    public UserController(UserService userService, RoleService roleService, AuthorityService authorityService, UserMapper userMapper) {
         this.userService = userService;
         this.roleService = roleService;
+        this.authorityService = authorityService;
         this.userMapper = userMapper;
     }
 
@@ -63,7 +66,7 @@ public class UserController {
     }
 
     // Create new User with this Info
-    @PreAuthorize("hasAuthority('CREATE')")
+    //@PreAuthorize("hasAuthority('CREATE')")
     @PostMapping("/")
     public ResponseEntity<User> createNewUser(@Valid @RequestBody User newUser) {
         log.info("A user will be created...");
@@ -90,6 +93,13 @@ public class UserController {
     public ResponseEntity<Role> createNewRole(@Valid @RequestBody Role newRole) {
         log.info("A new role will be created...");
         return ResponseEntity.status(201).body(roleService.createNewRole(newRole));
+    }
+
+    // Create new Authority
+    @PostMapping("/authority")
+    public ResponseEntity<Authority> createNewAuthority(@Valid @RequestBody Authority newAuthority) {
+        log.info("A new Authority will be created...");
+        return ResponseEntity.status(201).body(authorityService.createNewAuthority(newAuthority));
     }
 
     // Add Authority to Role

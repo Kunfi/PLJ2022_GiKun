@@ -38,11 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("**")
             .permitAll()
             .and()
+            /*
             .addFilterAfter(new JWTAuthorizationFilter(), BasicAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/users")
             .authenticated()
             .and()
+             */
             .formLogin();
     }
 }

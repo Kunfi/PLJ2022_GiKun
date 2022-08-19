@@ -43,16 +43,10 @@ public class RoleService {
     }
 
     public Role addAuthorityToRole(Integer roleId, Integer authorityId) throws NotFoundException {
-        if (!authorityRepository.existsById(authorityId)) {
-            log.debug("Authority existing");
-            Role role = roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
-            role.getAuthorities().add(authorityRepository.findById(authorityId).orElseThrow(() -> new NotFoundException("Authority")));
-            return roleRepository.save(role);
-        }
-        else {
-            log.debug("Role creation NOT successful");
-            throw new IdExistsException();
-        }
+        log.debug("Authority existing");
+        Role role = roleRepository.findById(roleId).orElseThrow(() -> new NotFoundException("Role"));
+        role.getAuthorities().add(authorityRepository.findById(authorityId).orElseThrow(() -> new NotFoundException("Authority")));
+        return roleRepository.save(role);
     }
 
     public String deleteRole(int roleId) throws NotFoundException{

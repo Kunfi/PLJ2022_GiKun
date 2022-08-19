@@ -70,8 +70,9 @@ public class UserService implements UserDetailsService {
         if (user == null){throw new UsernameNotFoundException("User not found");}
         else {
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            user.getRoles().forEach(role -> role.getAuthorities().forEach(authority ->
-                authorities.add(new SimpleGrantedAuthority(authority.getDescription()))));
+            user.getRoles().forEach(
+                role -> role.getAuthorities().forEach(
+                    authority -> authorities.add(new SimpleGrantedAuthority(authority.getDescription()))));
             return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), authorities);
         }
     }
