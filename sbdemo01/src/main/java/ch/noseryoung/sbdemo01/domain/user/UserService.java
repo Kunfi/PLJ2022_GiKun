@@ -3,12 +3,14 @@ package ch.noseryoung.sbdemo01.domain.user;
 import ch.noseryoung.sbdemo01.domain.exceptions.NotFoundException;
 import ch.noseryoung.sbdemo01.domain.exceptions.IdExistsException;
 import ch.noseryoung.sbdemo01.domain.role.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,17 +20,13 @@ import java.util.List;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-
-    @Autowired
-    public UserService(UserRepository repository, RoleRepository roleRepository) {
-        this.userRepository = repository;
-        this.roleRepository = roleRepository;
-    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,9 +38,10 @@ public class UserService implements UserDetailsService {
 
     public User createNewUser(User newUser) throws IdExistsException {
         if (!userRepository.existsById(newUser.getUserId())) {
-            User user = userRepository.save(newUser);
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            userRepository.save(newUser);
             log.debug("User creation successful");
-            return user;
+            return newUser;
         }
         else {
             log.debug("User creation NOT successful");

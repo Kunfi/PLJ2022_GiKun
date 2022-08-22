@@ -59,6 +59,8 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findById(userId));
     }
 
+
+
     @GetMapping("/roles/{roleId}")
     public ResponseEntity<Role> findRoleById
         (@PathVariable("roleId") Integer roleId) {
