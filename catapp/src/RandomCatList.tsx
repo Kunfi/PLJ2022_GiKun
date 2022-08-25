@@ -1,8 +1,6 @@
 import { Grid } from '@mui/material'
 import React from 'react'
 
-type Props = {}
-
 export default function RandomCatList() {
   return (
     <Grid container>
