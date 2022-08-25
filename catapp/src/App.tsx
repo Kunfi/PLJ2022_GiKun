@@ -1,10 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
-import MyComponent from './MyComponent';
-import { ExampleCounter } from './MyComponent';
 import './App.css';
 import { AppBar, Box, Container, Grid } from '@mui/material';
-
 
 function App() {
   return (
