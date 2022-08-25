@@ -2,6 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { AppBar, Box, Container, Grid } from '@mui/material';
+import RandomCatForm from './components/RandomCatForm';
+import RandomCatList from './components/RandomCatList';
 
 function App() {
   return (
@@ -9,16 +11,8 @@ function App() {
       <Box>
         <Container>
           <AppBar>
-            <Grid container>
-              <Grid item xs={12}>
-                <div>Form Here</div>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={12}>
-                <div>List here!</div>
-              </Grid>
-            </Grid>
+            <RandomCatForm />
+            <RandomCatList />
           </AppBar>
         </Container>
       </Box>
