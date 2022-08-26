@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { AppBar, Box, Container, Grid } from '@mui/material';
-import RandomCatForm from './RandomCatForm';
+import { Box, Container } from '@mui/material';
+import RandomCatForm, { Card } from './RandomCatForm';
 import RandomCatList from './RandomCatList';
 
 function App() {
 
-  const [cards, setCards] = useState<any[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
 
   const handleRandomCatFormSubmit = (myShinyNewCard: any) => {
     setCards(cards => [...cards, myShinyNewCard]);
@@ -16,10 +15,8 @@ function App() {
     <div className="App">
       <Box>
         <Container>
-          <AppBar>
             <RandomCatForm onSubmit={ handleRandomCatFormSubmit } />
-            <RandomCatList />
-          </AppBar>
+            <RandomCatList cards={cards} />
         </Container>
       </Box>
     </div>

@@ -1,12 +1,24 @@
 import { Grid } from '@mui/material'
 import React from 'react'
+import { Card } from './RandomCatForm'
+import Item from './Item';
 
-export default function RandomCatList() {
+type RandomCatListProps = {
+  cards: Card[]
+}
+
+
+const RandomCatList = (props: RandomCatListProps) => {
+
   return (
-    <Grid container>
-        <Grid item xs={12}>
-            <div>List here!</div>
-        </Grid>
-    </Grid>
+    <div>
+      <Grid>
+        {props.cards.map(card => {
+        return <Item card={card}></Item>;
+          })}
+      </Grid>
+    </div>
   )
 }
+
+export default RandomCatList
