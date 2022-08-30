@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from "axios";
+import {IAuthTokens, TokenRefreshRate, applyAuthTokenInterceptor} from "axios-jwt"
+import axios, { AxiosInstance } from "axios"
 
 const BASE_URL = "https://api.thecatapi.com/v1/images/search";
 
