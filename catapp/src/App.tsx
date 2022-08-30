@@ -1,27 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import {AppBar, Box, Container} from '@mui/material';
-import RandomCatForm, { Card } from './RandomCatForm';
-import RandomCatList from './RandomCatList';
-import {Link} from "react-router-dom";
+import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import {ProtectedRoute, ProtectedRouteProps} from "./auth/ProtectedRoute";
+import RandomCatPage from "./pages/RandomCatPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
 
-  const [cards, setCards] = useState<Card[]>([]);
+    const defaultProtectedRouteProps: Omit<ProtectedRouteProps, 'outlet'> = {
+        isAuthenticated: true, // TODO: !!sessionContext.isAuthenticated,
+        authenticationPath: '/login', // TODO: Write login route and page
+    };
 
-  const handleRandomCatFormSubmit = (newCard: any) => {
-    setCards(cards => [...cards, newCard].sort((a, b) => (b.timeStamp - a.timeStamp)))
-  }
-  return (
+    return (
     <div className="App">
       <Box>
         <Container>
-            <AppBar>
-                <Link to = "/home" color="#FFF"></Link>
-                <Link to = "/cats" color="#FFF"></Link>
-            </AppBar>
-            <RandomCatForm onSubmit={ handleRandomCatFormSubmit } />
-            <RandomCatList cards={cards} />
+            <BrowserRouter>
+                <AppBar>
+                    <Link to = "/home" color="#FFF"></Link>
+                    <Link to = "/cats" color="#FFF"></Link>
+                </AppBar>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/cats" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RandomCatPage />} />} />
+                    <Route path="/login" element={<LoginPage />} />
+                </Routes>
+            </BrowserRouter>
         </Container>
       </Box>
     </div>

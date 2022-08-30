@@ -35,7 +35,6 @@ const LoginPage = () => {
     })
 
     return (
-
         <div>
             <div>
                 <TextField name="username" id="username" placeholder="Username"></TextField>

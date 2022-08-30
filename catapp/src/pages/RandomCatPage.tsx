@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {AppBar, Box, Container, css} from '@mui/material';
 import RandomCatForm, { Card } from '../RandomCatForm';
 import RandomCatList from '../RandomCatList';
-import {ProtectedRouteProps} from '../auth/ProtectedRoute';
 
 
 function RandomCatPage() {
