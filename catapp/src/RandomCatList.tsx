@@ -3,20 +3,16 @@ import React from 'react'
 import { Card } from './RandomCatForm'
 import Item from './Item';
 
-type RandomCatListProps = {
-  cards: Card[]
-}
 
-
-const RandomCatList = (props: RandomCatListProps) => {
+const RandomCatList = ({cards}: {cards: any[]}) => {
 
   return (
     <div>
-      <Grid>
-        {props.cards.map(card => {
-        return <Item card={card}></Item>;
-          })}
-      </Grid>
+        <Grid container>
+            {cards.map(card => {
+            return <Item card={card}></Item>;
+              })}
+        </Grid>
     </div>
   )
 }

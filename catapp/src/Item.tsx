@@ -8,12 +8,10 @@ type ItemProps = {
 
 const Item = (props: ItemProps) => {
   return (
-    <Grid container>
-      <Grid item xs={4} spacing={1}>
+      <Grid item xs={3}>
         <img src={props.card.catImageUrl} alt="Cat" width='128' height='128'/>
         <div>{props.card.description}</div>
       </Grid>
-    </Grid> 
   )
 }
 

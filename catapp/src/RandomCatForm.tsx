@@ -25,7 +25,8 @@ const RandomCatForm = ({ onSubmit }: { onSubmit: (card: any) => void }) => {
     onSubmit: (values) => {
       const card : Card = {
         description: values.name,
-        catImageUrl: catImageUrl
+        catImageUrl: catImageUrl,
+        timeStamp: Date.now()
       };
       CatImageService()
         .getRandomCatImage()
@@ -77,5 +78,6 @@ export default RandomCatForm;
 
 export interface Card {
   description: string,
-  catImageUrl: string
+  catImageUrl: string,
+  timeStamp: number
 }
